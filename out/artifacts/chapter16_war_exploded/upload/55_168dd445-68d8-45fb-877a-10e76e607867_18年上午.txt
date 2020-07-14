@@ -1,0 +1,17 @@
+DBCDB
+CDBAD
+ACBCA
+BDCCA
+CBCDA
+
+dcBDa
+bCdaB
+cadcD
+CAdDa
+bAabc
+
+bAcAD
+bACDb
+AAccb
+bBccc
+DcaCb
