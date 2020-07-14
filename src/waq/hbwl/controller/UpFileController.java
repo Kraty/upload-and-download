@@ -13,6 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
 
@@ -59,6 +61,8 @@ public class UpFileController {
         String path = request.getServletContext().getRealPath("/download");
         // 创建该文件对象
         File file = new File(path + File.separator + filename);
+        // 对文件名编码，防止中文乱码
+        filename = this.getFilename(request, filename);
         // 设置响应头
         HttpHeaders headers = new HttpHeaders();
         // 通知浏览器以下载方式打开文件
@@ -67,6 +71,24 @@ public class UpFileController {
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         // 使用mvc框架的ResponseEntity对象封装返回下载数据
         return new ResponseEntity<>(FileUtils.readFileToByteArray(file), headers, HttpStatus.OK);
+
+    }
+
+    // 根据浏览器的不同进行编码设置，返回编码后的文件名
+    private String getFilename(HttpServletRequest request, String filename) {
+
+        // IE不同版本，User-Agent中出现的关键词
+        String[] IEBrowserKeyWords = {"MSIE", "Trident", "Edge"};
+        // 获取请求头的代理信息
+        String userAgent = request.getHeader("User-Agent");
+        for (String key : IEBrowserKeyWords) {
+            if (userAgent.contains(key)) {
+                // IE内核浏览器统一为UTF-8
+                return URLEncoder.encode(filename, StandardCharsets.UTF_8);
+            }
+        }
+        // 其他浏览器
+        return new String(filename.getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1);
 
     }
 
