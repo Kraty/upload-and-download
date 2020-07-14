@@ -17,8 +17,12 @@
                 alert("填写上传人")
                 return false;
             }
-            return !(file.length === 0 || file === "");
-            
+            if (file.length === 0 || file === "") {
+                alert("请选择文件")
+                return false;
+            }
+            return true;
+
         }
     </script>
 </head>
